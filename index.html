@@ -127,31 +127,16 @@ button{cursor:pointer}
 /* 드림북 */
 #bookLayer{position:fixed;inset:0;background:color-mix(in srgb,var(--ink) 55%,transparent);z-index:50;overflow:auto;
   padding:calc(env(safe-area-inset-top,0px) + 20px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 20px) max(16px,env(safe-area-inset-left,0px))}
-.book-actions{max-width:794px;margin:0 auto 12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center}
-.book-actions .grp{display:flex;gap:8px;flex-wrap:wrap}
-.book-actions input{border:2px solid var(--line);border-radius:12px;padding:8px 12px;background:var(--paper);min-width:0;width:200px}
-.book-actions .lbl{color:#fff;font-family:var(--f-title)}
-.pnote{max-width:794px;margin:0 auto 12px;color:#fff;font-size:14px}
-#book{--bk-ink:#16324A;--bk-muted:#587184;--bk-line:#CDE0DA;--bk-sea:#1B7486;--bk-coral:#EE6A52;--bk-sun:#FFC53D;--bk-soft:#F3F9F7;
-  max-width:794px;margin:0 auto;background:#fff;color:var(--bk-ink);border-radius:8px;padding:44px 48px;position:relative;
-  box-shadow:0 20px 50px rgba(0,0,0,.25)}
-#book::before{content:"";position:absolute;inset:14px;border:2px solid var(--bk-line);border-radius:4px;pointer-events:none}
-.bk-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
-.bk-top .kicker{font-family:var(--f-en);letter-spacing:3px;font-size:12px;color:var(--bk-muted);text-transform:uppercase}
-.bk-top h2{font-family:var(--f-en);font-weight:700;font-size:44px;line-height:1;margin:6px 0 0;color:var(--bk-ink)}
-.bk-top h2 em{font-style:normal;color:var(--bk-coral)}
-.idbox{text-align:right;font-size:14px;color:var(--bk-muted)}
-.idbox b{display:block;font-family:var(--f-title);font-weight:400;font-size:22px;color:var(--bk-ink);border-bottom:2px solid var(--bk-ink);min-width:160px;padding:0 4px}
-.bk-mid{display:grid;grid-template-columns:1fr 210px;gap:22px;margin-top:26px;align-items:stretch}
-.drawbox{border:2px dashed var(--bk-line);border-radius:14px;min-height:250px;display:flex;align-items:flex-end;justify-content:center;padding:10px;color:var(--bk-muted);font-family:var(--f-en);font-size:14px;background:var(--bk-soft)}
-.stampcol{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
-.stamp{width:190px;height:190px;max-width:100%}
-.stamp text{font-family:var(--f-en);font-weight:700}
-.bk-text{margin-top:26px;font-family:var(--f-en);font-size:21px;line-height:2.1;background:repeating-linear-gradient(transparent 0 42px,var(--bk-line) 42px 44px);padding:0 4px}
-.bk-text p{margin:0}
-.bk-ko{margin-top:14px;font-size:14px;color:var(--bk-muted);line-height:1.7;border-left:3px solid var(--bk-sun);padding-left:12px}
-.bk-sign{display:flex;justify-content:space-between;gap:16px;margin-top:28px;font-size:14px;color:var(--bk-muted);flex-wrap:wrap}
-.bk-sign span b{display:inline-block;min-width:140px;border-bottom:1.5px solid var(--bk-ink);margin-left:6px;color:var(--bk-ink);font-family:var(--f-en);font-weight:500}
+#done{max-width:720px;margin:0 auto;background:var(--paper);color:var(--ink);border-radius:22px;padding:32px 36px;box-shadow:0 20px 50px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:16px;align-items:stretch}
+#done h2{font-family:var(--f-en);font-weight:700;font-size:36px;line-height:1.1;margin:0;color:var(--ink)}
+#done h2 em{font-style:normal;color:var(--coral)}
+.done-list{margin:0;padding:0 0 0 1.4em;display:flex;flex-direction:column;gap:12px}
+.done-list li{padding-left:4px}
+.done-list .en{display:block;font-family:var(--f-en);font-size:22px;font-weight:600;line-height:1.4}
+.done-list .ko{display:block;font-size:16px;color:var(--muted)}
+.done-guide{margin:4px 0 0;background:var(--sun-soft);border-radius:14px;padding:12px 16px;font-family:var(--f-title);font-size:19px}
+.done-check{margin:0;text-align:center;font-family:var(--f-title);font-size:22px;color:var(--coral)}
+#done .btn{align-self:center}
 
 /* 반응형 */
 @media (max-width:900px){
@@ -164,27 +149,11 @@ button{cursor:pointer}
   .badge{width:42px;height:42px;font-size:15px}
   .mini span{display:none}
   .chosen{display:none}
-  #book{padding:30px 24px}
-  .bk-top h2{font-size:32px}
-  .bk-mid{grid-template-columns:1fr}
-  .bk-text{font-size:18px}
+  #done{padding:24px 20px}
+  #done h2{font-size:28px}
+  .done-list .en{font-size:19px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
-
-/* A4 인쇄: 드림북만 */
-@page{size:A4;margin:12mm}
-@media print{
-  :root{color-scheme:light}
-  body{background:#fff;padding:0}
-  body>*:not(#bookLayer){display:none!important}
-  #bookLayer{position:static;background:none;padding:0;overflow:visible}
-  #bookLayer[hidden]{display:block!important}
-  .book-actions,.pnote{display:none!important}
-  #book{box-shadow:none;max-width:none;padding:14mm 14mm;border-radius:0}
-  .bk-mid{grid-template-columns:1fr 60mm}
-  .drawbox{min-height:85mm}
-  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-}
 </style>
 
 <div class="wrap" id="app">
@@ -193,7 +162,7 @@ button{cursor:pointer}
       <span class="eyebrow">초등 영어 작문 · 장래희망</span>
       <h1>MY FUTURE <em>DREAM</em></h1>
       <p class="q">What do you want to be?</p>
-      <p>되고 싶은 직업, 좋아하는 과목과 활동, 존경하는 사람, 미래의 다짐을 차례로 골라 나만의 영어 글을 완성해요. 다 쓰면 원어민 발음으로 듣고, 드림북으로 인쇄할 수 있어요.</p>
+      <p>되고 싶은 직업, 좋아하는 과목과 활동, 존경하는 사람, 미래의 다짐을 차례로 골라 나만의 영어 글을 완성해요. 다 쓰면 원어민 발음으로 듣고, 공책에 옮겨 써요.</p>
       <div class="hero-cta">
         <button class="btn btn-main" id="goStart" type="button">나의 꿈 쓰기 시작</button>
         <button class="btn btn-sub" id="goSample" type="button">예시 글 보기</button>
@@ -235,46 +204,21 @@ button{cursor:pointer}
         <label><input type="checkbox" id="showKo" checked> 우리말 뜻</label>
       </div>
       <div class="draft-foot">
-        <button class="btn btn-main" id="openBook" type="button" disabled>드림북 만들기</button>
-        <p class="note" id="bookNote">1·3·5단계를 채우면 드림북을 만들 수 있어요.</p>
+        <button class="btn btn-main" id="openBook" type="button" disabled>완성하기</button>
+        <p class="note" id="bookNote">1·3·5단계를 채우면 완성할 수 있어요.</p>
         <button class="linkbtn" id="resetAll" type="button">처음부터 다시 쓰기</button>
       </div>
     </section>
   </main>
 </div>
 
-<div id="bookLayer" hidden role="dialog" aria-modal="true" aria-label="나의 드림북">
-  <div class="book-actions">
-    <div class="grp">
-      <span class="lbl">이름</span>
-      <input id="nameIn" type="text" placeholder="이름 또는 영어 이름" maxlength="20">
-    </div>
-    <div class="grp">
-      <button class="btn btn-sub" id="readBook" type="button">듣기</button>
-      <button class="btn btn-sub" id="copyBook" type="button">글 복사</button>
-      <button class="btn btn-sea" id="printBook" type="button">A4 인쇄</button>
-      <button class="btn btn-main" id="closeBook" type="button">닫기</button>
-    </div>
-  </div>
-  <p class="pnote" id="printNote" hidden>이 화면에서는 인쇄 창이 열리지 않아요. 내려받은 HTML 파일을 브라우저에서 열면 A4로 인쇄할 수 있어요.</p>
-  <article id="book">
-    <div class="bk-top">
-      <div>
-        <div class="kicker">Elementary English Writing · Dream Book</div>
-        <h2>My Future <em>Dream</em></h2>
-      </div>
-      <div class="idbox">Name<b id="bkName">&nbsp;</b></div>
-    </div>
-    <div class="bk-mid">
-      <div class="drawbox">Draw the future me!</div>
-      <div class="stampcol"><svg class="stamp" id="stamp" viewBox="0 0 200 200" aria-hidden="true"></svg></div>
-    </div>
-    <div class="bk-text" id="bkText"></div>
-    <div class="bk-ko" id="bkKo"></div>
-    <div class="bk-sign">
-      <span>Date <b id="bkDate"></b></span>
-      <span>Signature <b>&nbsp;</b></span>
-    </div>
+<div id="bookLayer" hidden role="dialog" aria-modal="true" aria-label="완성된 나의 글">
+  <article id="done">
+    <h2>My Future <em>Dream</em></h2>
+    <ol class="done-list" id="doneList"></ol>
+    <p class="done-guide">완성된 영어 문장을 공책에 옮겨 써 보세요!</p>
+    <p class="done-check">다 썼다면 선생님께 검사받아요!</p>
+    <button class="btn btn-main" id="closeBook" type="button">닫기</button>
   </article>
 </div>
 
@@ -421,7 +365,7 @@ function renderDraft(){
   $('#barFill').style.width=(handled/5*100)+'%';
   const ready=['job','like','want'].every(k=>S.sel[k]);
   $('#openBook').disabled=!ready;
-  $('#bookNote').textContent=ready?'드림북에서 이름을 쓰고 그림 칸에 미래의 나를 그려 보세요.':'1·3·5단계를 채우면 드림북을 만들 수 있어요.';
+  $('#bookNote').textContent=ready?'완성하기를 누르면 완성된 문장을 볼 수 있어요.':'1·3·5단계를 채우면 완성할 수 있어요.';
   $('#readAll').disabled=n===0;
 }
 function render(){ renderSteps(); renderDraft(); save(); }
@@ -490,45 +434,28 @@ const filled=()=>STEPS.map((_,i)=>i).filter(i=>sentence(i));
 $('#lines').addEventListener('click',e=>{ const b=e.target.closest('[data-say]'); if(b) readSeq([+b.dataset.say]); });
 $('#readAll').addEventListener('click',()=>readSeq(filled()));
 
-/* 드림북 */
-const inFrame=(()=>{ try{return window.self!==window.top;}catch(e){return true;} })();
-function stampSVG(){
-  const j=S.sel.job, label=(j?j.en.replace(/^(an?|the) /i,''):'dreamer').toUpperCase();
-  const fs=label.length>14?13:label.length>10?16:20;
-  return `<circle cx="100" cy="100" r="92" fill="none" stroke="#EE6A52" stroke-width="4"/>
-  <circle cx="100" cy="100" r="80" fill="none" stroke="#EE6A52" stroke-width="1.5" stroke-dasharray="4 4"/>
-  <defs><path id="arcT" d="M28,100 a72,72 0 1,1 144,0"/><path id="arcB" d="M30,104 a70,70 0 0,0 140,0"/></defs>
-  <text fill="#EE6A52" font-size="13" letter-spacing="3"><textPath href="#arcT" startOffset="50%" text-anchor="middle">MY FUTURE DREAM</textPath></text>
-  <text fill="#EE6A52" font-size="11" letter-spacing="3"><textPath href="#arcB" startOffset="50%" text-anchor="middle">I CAN DO IT</textPath></text>
-  <path d="M100 52 l9 18 20 3 -14.5 14 3.4 20 -17.9 -9.4 -17.9 9.4 3.4 -20 -14.5 -14 20 -3z" fill="#FFC53D"/>
-  <text x="100" y="138" text-anchor="middle" fill="#16324A" font-size="${fs}">${esc(label)}</text>`;
+/* 완성하기 */
+const OWN='(직접 쓴 표현)';
+const hasBatchim=w=>{ const c=w.trim().slice(-1).charCodeAt(0); return c>=0xAC00&&c<=0xD7A3 ? (c-0xAC00)%28!==0 : false; };
+const ida=w=>w+(hasBatchim(w)?'이에요':'예요');
+const KO_SENT={
+  job:  k=>`나는 ${k}${hasBatchim(k)?'이':'가'} 되고 싶어요.`,
+  subj: k=>`내가 가장 좋아하는 과목은 ${ida(k)}.`,
+  like: k=>`나는 ${k}${hasBatchim(k)?'을':'를'} 좋아해요.`,
+  who:  k=>`내가 가장 좋아하는 사람은 ${ida(k)}.`,
+  want: k=>`나는 ${k.replace(/다$/,'')}고 싶어요.`
+};
+function koSentence(i){
+  const st=STEPS[i], v=S.sel[st.key];
+  return v.ko===OWN ? '직접 쓴 문장이에요. 뜻을 스스로 생각해 보세요.' : KO_SENT[st.key](v.ko);
 }
-function fillBook(){
-  const name=S.name||'';
-  $('#nameIn').value=name;
-  $('#bkName').textContent=name||' ';
-  const d=new Date(); $('#bkDate').textContent=d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  const idx=filled();
-  const intro = name ? `Hi! My name is ${esc(name)}. ` : '';
-  $('#bkText').innerHTML='<p>'+intro+idx.map(i=>esc(sentence(i))).join(' ')+'</p>';
-  $('#bkKo').textContent=idx.map(i=>{ const v=S.sel[STEPS[i].key]; return STEPS[i].ko.replace(/ (정하기|고르기)$/,'')+': '+v.ko; }).join(' · ');
-  $('#bkKo').hidden=!$('#showKo').checked;
-  $('#stamp').innerHTML=stampSVG();
-  $('#printNote').hidden=!inFrame;
+function fillDone(){
+  $('#doneList').innerHTML=filled().map(i=>`<li><span class="en">${esc(sentence(i))}</span><span class="ko">${esc(koSentence(i))}</span></li>`).join('');
 }
-$('#openBook').addEventListener('click',()=>{ fillBook(); $('#bookLayer').hidden=false; document.body.style.overflow='hidden'; $('#nameIn').focus(); });
+$('#openBook').addEventListener('click',()=>{ fillDone(); $('#bookLayer').hidden=false; document.body.style.overflow='hidden'; $('#closeBook').focus(); });
 const closeBook=()=>{ $('#bookLayer').hidden=true; document.body.style.overflow=''; if('speechSynthesis' in window) speechSynthesis.cancel(); };
 $('#closeBook').addEventListener('click',closeBook);
 document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !$('#bookLayer').hidden) closeBook(); });
-$('#nameIn').addEventListener('input',e=>{ S.name=e.target.value.trim(); save(); fillBook(); });
-$('#readBook').addEventListener('click',()=>{ const t=$('#bkText').textContent; speak(t); });
-$('#copyBook').addEventListener('click',function(){
-  const t=$('#bkText').textContent, b=this;
-  const ok=()=>{ b.textContent='복사했어요'; setTimeout(()=>b.textContent='글 복사',1600); };
-  const fallback=()=>{ const r=document.createRange(); r.selectNodeContents($('#bkText')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent='선택됐어요 · Ctrl+C'; setTimeout(()=>b.textContent='글 복사',2400); };
-  try{ navigator.clipboard.writeText(t).then(ok,fallback); }catch(e){ fallback(); }
-});
-$('#printBook').addEventListener('click',()=>{ if(inFrame){ $('#printNote').hidden=false; return; } window.print(); });
 
 render();
 })();
