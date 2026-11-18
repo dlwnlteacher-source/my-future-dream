@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>나의 꿈 드림북</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Jua&family=Gowun+Dodum&display=swap">
+<style>
+/* Layout: 꿈 여권(passport) — 위쪽은 짧은 표지, 아래는 왼쪽 단계 카드 + 오른쪽 실시간 원고지, 완성하면 여권 한 쪽(드림북)이 펼쳐진다 */
+:root{
+  --bg:#EAF4F1; --paper:#FFFFFF; --ink:#16324A; --muted:#587184; --line:#CDE0DA;
+  --sea:#1B7486; --sea-soft:#D6ECEF; --sun:#FFC53D; --sun-soft:#FFF1C9; --coral:#EE6A52; --coral-soft:#FDE3DC;
+  --ok:#2E8B57;
+  --f-en:"Fredoka","Jua",system-ui,sans-serif;
+  --f-title:"Jua","Fredoka",system-ui,sans-serif;
+  --f-body:"Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1D25; --paper:#162A34; --ink:#E6F0F2; --muted:#93AEBA; --line:#294552;
+  --sea:#4CB2C4; --sea-soft:#1B3B46; --sun:#FFD15C; --sun-soft:#3A3420; --coral:#FF8A72; --coral-soft:#43281F; --ok:#5FC28A;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1D25; --paper:#162A34; --ink:#E6F0F2; --muted:#93AEBA; --line:#294552;
+  --sea:#4CB2C4; --sea-soft:#1B3B46; --sun:#FFD15C; --sun-soft:#3A3420; --coral:#FF8A72; --coral-soft:#43281F; --ok:#5FC28A;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:8px}
+.wrap{max-width:1180px;margin:0 auto}
+
+/* 표지 */
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:28px;align-items:center;padding-block:36px 28px}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;font-family:var(--f-title);color:var(--sea);background:var(--sea-soft);padding:4px 14px;border-radius:999px;font-size:15px}
+.hero h1{font-family:var(--f-en);font-weight:700;font-size:clamp(40px,7vw,76px);line-height:1;margin:14px 0 6px;letter-spacing:-.5px;color:var(--ink);text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--coral)}
+.hero .q{font-family:var(--f-en);font-size:clamp(20px,2.6vw,28px);color:var(--sea);margin:0 0 10px}
+.hero p{margin:0;color:var(--muted);max-width:52ch}
+.hero-cta{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:0;border-radius:14px;padding:12px 20px;font-family:var(--f-title);font-size:18px;display:inline-flex;gap:8px;align-items:center;transition:transform .15s}
+.btn:active{transform:translateY(1px)}
+.btn-main{background:var(--coral);color:#fff;box-shadow:0 4px 0 color-mix(in srgb,var(--coral) 60%,#000)}
+.btn-sub{background:var(--paper);color:var(--ink);border:2px solid var(--line)}
+.btn-sea{background:var(--sea);color:#fff}
+.btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
+.ticket{background:var(--paper);border:2px dashed var(--line);border-radius:22px;padding:18px 18px 14px;position:relative}
+.ticket h2{font-family:var(--f-title);font-size:16px;margin:0 0 10px;color:var(--muted);font-weight:400}
+.jobs-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.mini{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;font-size:12px;color:var(--muted)}
+.mini b{font-family:var(--f-title);font-weight:400;color:var(--ink);font-size:14px}
+.badge{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-en);font-weight:700;font-size:18px;color:#fff}
+.g-art{background:var(--coral)} .g-sci{background:var(--sea)} .g-med{background:var(--ok)} .g-life{background:#C98A12}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+/* 작업 영역 */
+.work{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:24px;align-items:start}
+.tip{background:var(--sun-soft);border-radius:14px;padding:10px 14px;font-size:15px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.tip b{font-family:var(--f-title);font-weight:400}
+.steps{display:flex;flex-direction:column;gap:12px}
+.step{background:var(--paper);border:2px solid var(--line);border-radius:18px;overflow:hidden}
+.step.open{border-color:var(--sea)}
+.step.done:not(.open){border-color:color-mix(in srgb,var(--ok) 55%,var(--line))}
+.step-head{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;background:none;border:0;padding:14px 16px;text-align:left}
+.num{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-family:var(--f-en);font-weight:700;font-size:18px;background:var(--sea-soft);color:var(--sea)}
+.step.done .num{background:var(--ok);color:#fff}
+.step-title{font-family:var(--f-title);font-size:19px;line-height:1.3}
+.step-title small{display:block;font-family:var(--f-en);font-size:15px;color:var(--muted);font-weight:500}
+.tag{font-size:12px;border-radius:999px;padding:2px 10px;background:var(--sea-soft);color:var(--sea);font-family:var(--f-title);white-space:nowrap}
+.tag.opt{background:var(--sun-soft);color:color-mix(in srgb,var(--sun) 40%,var(--ink))}
+.chosen{font-family:var(--f-en);color:var(--ok);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
+.step-body{padding:0 16px 16px;display:none}
+.step.open .step-body{display:block}
+.frame{font-family:var(--f-en);font-size:20px;background:var(--bg);border-radius:12px;padding:10px 14px;margin:0 0 4px}
+.frame .blank{color:var(--coral);border-bottom:2px dashed var(--coral);padding:0 4px}
+.ask{color:var(--muted);font-size:14px;margin:0 0 10px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.filter{border:2px solid var(--line);background:var(--paper);border-radius:999px;padding:4px 12px;font-size:14px;font-family:var(--f-title)}
+.filter[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;max-height:330px;overflow:auto;padding:2px}
+.chip{border:2px solid var(--line);background:var(--paper);border-radius:12px;padding:8px 10px;text-align:left;display:flex;flex-direction:column;gap:0;position:relative;min-width:0}
+.chip:hover{border-color:var(--sea)}
+.chip .en{font-family:var(--f-en);font-weight:600;font-size:15px;line-height:1.25}
+.chip .en .art{color:var(--muted);font-weight:500}
+.chip .ko{font-size:13px;color:var(--muted)}
+.chip .rec{position:absolute;top:-8px;right:6px;font-size:11px;background:var(--sun);color:#3a2a00;border-radius:6px;padding:0 6px;font-family:var(--f-title)}
+.chip[aria-pressed="true"]{background:var(--sea);border-color:var(--sea);color:#fff}
+.chip[aria-pressed="true"] .ko,.chip[aria-pressed="true"] .art{color:#E6F6F8}
+.own{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.own input{flex:1 1 200px;min-width:0;border:2px solid var(--line);border-radius:12px;padding:8px 12px;background:var(--paper);font-family:var(--f-en)}
+.step-foot{display:flex;justify-content:space-between;gap:8px;margin-top:12px;flex-wrap:wrap}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:14px;padding:6px 0}
+
+/* 원고(미리보기) */
+.draft{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);background:var(--paper);border:2px solid var(--line);border-radius:22px;padding:18px}
+.draft-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.draft h2{font-family:var(--f-title);font-weight:400;font-size:22px;margin:0}
+.count{font-family:var(--f-en);color:var(--muted);font-variant-numeric:tabular-nums}
+.bar{height:8px;background:var(--bg);border-radius:99px;margin:10px 0 14px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--sea),var(--ok));width:0;transition:width .3s}
+.lines{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.line{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:start;padding:8px 10px;border-radius:12px;background:repeating-linear-gradient(transparent 0 30px,var(--line) 30px 31px)}
+.line .n{font-family:var(--f-en);color:var(--muted);font-weight:600;padding-top:2px}
+.line .s{font-family:var(--f-en);font-size:18px;line-height:1.55}
+.line .s .fill{color:var(--sea);font-weight:600}
+.line .s .hole{color:var(--line);letter-spacing:2px}
+.line .hint{display:block;font-family:var(--f-body);font-size:13px;color:var(--muted)}
+.line.skip .s{color:var(--muted);text-decoration:line-through;opacity:.6}
+.say{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--paper);display:grid;place-items:center}
+.say svg{width:16px;height:16px;fill:var(--sea)}
+.say[disabled]{opacity:.3;cursor:default}
+.listen{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:2px dashed var(--line)}
+.listen label{font-size:14px;color:var(--muted)}
+.listen select{border:2px solid var(--line);border-radius:10px;padding:6px 8px;background:var(--paper)}
+.draft-foot{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.draft-foot .note{font-size:13px;color:var(--muted);text-align:center;margin:0}
+.speaking{background:var(--sun-soft)!important}
+
+/* 드림북 */
+#bookLayer{position:fixed;inset:0;background:color-mix(in srgb,var(--ink) 55%,transparent);z-index:50;overflow:auto;
+  padding:calc(env(safe-area-inset-top,0px) + 20px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 20px) max(16px,env(safe-area-inset-left,0px))}
+.book-actions{max-width:794px;margin:0 auto 12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+.book-actions .grp{display:flex;gap:8px;flex-wrap:wrap}
+.book-actions input{border:2px solid var(--line);border-radius:12px;padding:8px 12px;background:var(--paper);min-width:0;width:200px}
+.book-actions .lbl{color:#fff;font-family:var(--f-title)}
+.pnote{max-width:794px;margin:0 auto 12px;color:#fff;font-size:14px}
+#book{--bk-ink:#16324A;--bk-muted:#587184;--bk-line:#CDE0DA;--bk-sea:#1B7486;--bk-coral:#EE6A52;--bk-sun:#FFC53D;--bk-soft:#F3F9F7;
+  max-width:794px;margin:0 auto;background:#fff;color:var(--bk-ink);border-radius:8px;padding:44px 48px;position:relative;
+  box-shadow:0 20px 50px rgba(0,0,0,.25)}
+#book::before{content:"";position:absolute;inset:14px;border:2px solid var(--bk-line);border-radius:4px;pointer-events:none}
+.bk-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.bk-top .kicker{font-family:var(--f-en);letter-spacing:3px;font-size:12px;color:var(--bk-muted);text-transform:uppercase}
+.bk-top h2{font-family:var(--f-en);font-weight:700;font-size:44px;line-height:1;margin:6px 0 0;color:var(--bk-ink)}
+.bk-top h2 em{font-style:normal;color:var(--bk-coral)}
+.idbox{text-align:right;font-size:14px;color:var(--bk-muted)}
+.idbox b{display:block;font-family:var(--f-title);font-weight:400;font-size:22px;color:var(--bk-ink);border-bottom:2px solid var(--bk-ink);min-width:160px;padding:0 4px}
+.bk-mid{display:grid;grid-template-columns:1fr 210px;gap:22px;margin-top:26px;align-items:stretch}
+.drawbox{border:2px dashed var(--bk-line);border-radius:14px;min-height:250px;display:flex;align-items:flex-end;justify-content:center;padding:10px;color:var(--bk-muted);font-family:var(--f-en);font-size:14px;background:var(--bk-soft)}
+.stampcol{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.stamp{width:190px;height:190px;max-width:100%}
+.stamp text{font-family:var(--f-en);font-weight:700}
+.bk-text{margin-top:26px;font-family:var(--f-en);font-size:21px;line-height:2.1;background:repeating-linear-gradient(transparent 0 42px,var(--bk-line) 42px 44px);padding:0 4px}
+.bk-text p{margin:0}
+.bk-ko{margin-top:14px;font-size:14px;color:var(--bk-muted);line-height:1.7;border-left:3px solid var(--bk-sun);padding-left:12px}
+.bk-sign{display:flex;justify-content:space-between;gap:16px;margin-top:28px;font-size:14px;color:var(--bk-muted);flex-wrap:wrap}
+.bk-sign span b{display:inline-block;min-width:140px;border-bottom:1.5px solid var(--bk-ink);margin-left:6px;color:var(--bk-ink);font-family:var(--f-en);font-weight:500}
+
+/* 반응형 */
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .work{grid-template-columns:1fr}
+  .draft{position:static}
+}
+@media (max-width:560px){
+  .jobs-row{grid-template-columns:repeat(5,1fr);gap:4px}
+  .badge{width:42px;height:42px;font-size:15px}
+  .mini span{display:none}
+  .chosen{display:none}
+  #book{padding:30px 24px}
+  .bk-top h2{font-size:32px}
+  .bk-mid{grid-template-columns:1fr}
+  .bk-text{font-size:18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* A4 인쇄: 드림북만 */
+@page{size:A4;margin:12mm}
+@media print{
+  :root{color-scheme:light}
+  body{background:#fff;padding:0}
+  body>*:not(#bookLayer){display:none!important}
+  #bookLayer{position:static;background:none;padding:0;overflow:visible}
+  #bookLayer[hidden]{display:block!important}
+  .book-actions,.pnote{display:none!important}
+  #book{box-shadow:none;max-width:none;padding:14mm 14mm;border-radius:0}
+  .bk-mid{grid-template-columns:1fr 60mm}
+  .drawbox{min-height:85mm}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+
+<div class="wrap" id="app">
+  <header class="hero">
+    <div>
+      <span class="eyebrow">초등 영어 작문 · 장래희망</span>
+      <h1>MY FUTURE <em>DREAM</em></h1>
+      <p class="q">What do you want to be?</p>
+      <p>되고 싶은 직업, 좋아하는 과목과 활동, 존경하는 사람, 미래의 다짐을 차례로 골라 나만의 영어 글을 완성해요. 다 쓰면 원어민 발음으로 듣고, 드림북으로 인쇄할 수 있어요.</p>
+      <div class="hero-cta">
+        <button class="btn btn-main" id="goStart" type="button">나의 꿈 쓰기 시작</button>
+        <button class="btn btn-sub" id="goSample" type="button">예시 글 보기</button>
+      </div>
+    </div>
+    <aside class="ticket" aria-label="직업 친구들">
+      <h2>이런 꿈을 가진 친구들이 있어요</h2>
+      <div class="jobs-row" id="heroJobs"></div>
+      <div class="legend">
+        <span><i class="g-art"></i>스포츠·예술</span>
+        <span><i class="g-sci"></i>교육·과학</span>
+        <span><i class="g-med"></i>의료·생명</span>
+        <span><i class="g-life"></i>생활·사회</span>
+      </div>
+    </aside>
+  </header>
+
+  <main class="work" id="work">
+    <section aria-label="문장 고르기">
+      <div class="tip"><span><b>단계를 눌러 표현을 골라요.</b> 2·4단계는 건너뛰어도 괜찮아요.</span><span class="count" id="progTxt">0 / 5</span></div>
+      <div class="steps" id="steps"></div>
+    </section>
+
+    <section class="draft" aria-label="나의 글 미리보기">
+      <div class="draft-head">
+        <h2>나의 글</h2>
+        <span class="count" id="draftCount">0문장</span>
+      </div>
+      <div class="bar"><i id="barFill"></i></div>
+      <ol class="lines" id="lines"></ol>
+      <div class="listen">
+        <button class="btn btn-sea" id="readAll" type="button">전체 듣기</button>
+        <label for="rate">속도</label>
+        <select id="rate">
+          <option value="0.75">천천히</option>
+          <option value="0.95" selected>보통</option>
+          <option value="1.1">빠르게</option>
+        </select>
+        <label><input type="checkbox" id="showKo" checked> 우리말 뜻</label>
+      </div>
+      <div class="draft-foot">
+        <button class="btn btn-main" id="openBook" type="button" disabled>드림북 만들기</button>
+        <p class="note" id="bookNote">1·3·5단계를 채우면 드림북을 만들 수 있어요.</p>
+        <button class="linkbtn" id="resetAll" type="button">처음부터 다시 쓰기</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="bookLayer" hidden role="dialog" aria-modal="true" aria-label="나의 드림북">
+  <div class="book-actions">
+    <div class="grp">
+      <span class="lbl">이름</span>
+      <input id="nameIn" type="text" placeholder="이름 또는 영어 이름" maxlength="20">
+    </div>
+    <div class="grp">
+      <button class="btn btn-sub" id="readBook" type="button">듣기</button>
+      <button class="btn btn-sub" id="copyBook" type="button">글 복사</button>
+      <button class="btn btn-sea" id="printBook" type="button">A4 인쇄</button>
+      <button class="btn btn-main" id="closeBook" type="button">닫기</button>
+    </div>
+  </div>
+  <p class="pnote" id="printNote" hidden>이 화면에서는 인쇄 창이 열리지 않아요. 내려받은 HTML 파일을 브라우저에서 열면 A4로 인쇄할 수 있어요.</p>
+  <article id="book">
+    <div class="bk-top">
+      <div>
+        <div class="kicker">Elementary English Writing · Dream Book</div>
+        <h2>My Future <em>Dream</em></h2>
+      </div>
+      <div class="idbox">Name<b id="bkName">&nbsp;</b></div>
+    </div>
+    <div class="bk-mid">
+      <div class="drawbox">Draw the future me!</div>
+      <div class="stampcol"><svg class="stamp" id="stamp" viewBox="0 0 200 200" aria-hidden="true"></svg></div>
+    </div>
+    <div class="bk-text" id="bkText"></div>
+    <div class="bk-ko" id="bkKo"></div>
+    <div class="bk-sign">
+      <span>Date <b id="bkDate"></b></span>
+      <span>Signature <b>&nbsp;</b></span>
+    </div>
+  </article>
+</div>
+
+<script>
+(function(){
+const G = {art:'스포츠·예술', sci:'교육·과학', med:'의료·생명', life:'생활·사회'};
+const J = (g,en,ko)=>({g,en,ko});
+const JOBS = [
+ J('art','a soccer player','축구 선수'),J('art','a baseball player','야구 선수'),J('art','a basketball player','농구 선수'),
+ J('art','a swimmer','수영 선수'),J('art','a taekwondo player','태권도 선수'),J('art','an esports player','이스포츠 선수'),
+ J('art','a singer','가수'),J('art','a dancer','댄서'),J('art','an actor','배우'),J('art','an artist','화가'),
+ J('art','a webtoon artist','웹툰 작가'),J('art','a pianist','피아니스트'),J('art','a movie director','영화감독'),
+ J('art','a photographer','사진작가'),J('art','a writer','작가'),J('art','a YouTuber','유튜버'),J('art','a fashion designer','패션 디자이너'),
+ J('sci','a teacher','선생님'),J('sci','a scientist','과학자'),J('sci','an astronaut','우주비행사'),J('sci','an engineer','엔지니어'),
+ J('sci','a programmer','프로그래머'),J('sci','a game developer','게임 개발자'),J('sci','an inventor','발명가'),
+ J('sci','a robot engineer','로봇 공학자'),J('sci','an architect','건축가'),
+ J('med','a doctor','의사'),J('med','a nurse','간호사'),J('med','a vet','수의사'),J('med','a dentist','치과의사'),
+ J('med','a zookeeper','사육사'),J('med','a marine biologist','해양생물학자'),J('med','a pharmacist','약사'),
+ J('life','a firefighter','소방관'),J('life','a police officer','경찰관'),J('life','a chef','요리사'),J('life','a baker','제빵사'),
+ J('life','a pilot','비행기 조종사'),J('life','a farmer','농부'),J('life','a flight attendant','승무원'),J('life','a CEO','회사 대표'),
+ J('life','a lawyer','변호사')
+];
+const SUBJECTS = [
+ J('all','English','영어'),J('sci','math','수학'),J('sci','science','과학'),J('med','science','과학'),J('art','P.E.','체육'),
+ J('art','music','음악'),J('art','art','미술'),J('life','Korean','국어'),J('life','social studies','사회'),
+ J('life','practical arts','실과'),J('sci','coding','코딩'),J('life','history','역사')
+].filter((v,i,a)=>a.findIndex(x=>x.en===v.en)===i);
+SUBJECTS.find(s=>s.en==='science').g2='med';
+const LIKES = [
+ J('art','playing soccer','축구하기'),J('art','playing basketball','농구하기'),J('art','swimming','수영하기'),J('art','dancing','춤추기'),
+ J('art','singing songs','노래 부르기'),J('art','drawing pictures','그림 그리기'),J('art','playing the piano','피아노 치기'),
+ J('art','watching movies','영화 보기'),J('art','taking pictures','사진 찍기'),J('art','making videos','영상 만들기'),J('art','writing stories','이야기 쓰기'),
+ J('sci','reading books','책 읽기'),J('sci','solving puzzles','퍼즐 풀기'),J('sci','doing experiments','실험하기'),J('sci','making robots','로봇 만들기'),
+ J('sci','coding','코딩하기'),J('sci','looking at the stars','별 보기'),J('sci','building with blocks','블록 쌓기'),J('sci','playing computer games','컴퓨터 게임하기'),
+ J('med','helping my friends','친구 돕기'),J('med','taking care of animals','동물 돌보기'),J('med','growing plants','식물 기르기'),J('med','learning about the body','몸에 대해 배우기'),
+ J('life','cooking','요리하기'),J('life','baking cookies','쿠키 굽기'),J('life','traveling','여행하기'),J('life','riding my bike','자전거 타기'),J('life','talking with people','사람들과 이야기하기')
+];
+const PEOPLE = [
+ J('all','my mom','우리 엄마'),J('all','my dad','우리 아빠'),J('all','my grandma','우리 할머니'),J('all','my grandpa','우리 할아버지'),
+ J('all','my sister','우리 언니/누나/여동생'),J('all','my brother','우리 형/오빠/남동생'),J('all','my teacher','우리 선생님'),J('all','my best friend','나의 단짝'),
+ J('art','Son Heung-min','손흥민'),J('art','Kim Yuna','김연아'),J('art','Beethoven','베토벤'),J('art','Vincent van Gogh','빈센트 반 고흐'),
+ J('sci','King Sejong','세종대왕'),J('sci','Thomas Edison','토머스 에디슨'),J('sci','Albert Einstein','알베르트 아인슈타인'),J('sci','Marie Curie','마리 퀴리'),
+ J('med','Florence Nightingale','플로렌스 나이팅게일'),J('med','Jane Goodall','제인 구달'),J('med','Dr. Lee Jong-wook','이종욱 박사'),
+ J('life','Admiral Yi Sun-sin','이순신 장군'),J('life','Yu Gwan-sun','유관순')
+];
+const WANTS = [
+ J('art','play in the World Cup','월드컵에서 뛰다'),J('art','win an Olympic gold medal','올림픽 금메달을 따다'),J('art','make people happy with my songs','내 노래로 사람들을 행복하게 하다'),
+ J('art','draw beautiful pictures','아름다운 그림을 그리다'),J('art','make fun movies','재미있는 영화를 만들다'),J('art','write great stories','멋진 이야기를 쓰다'),
+ J('sci','teach children kindly','아이들을 친절하게 가르치다'),J('sci','make cool robots','멋진 로봇을 만들다'),J('sci','discover new things','새로운 것을 발견하다'),
+ J('sci','travel to space','우주로 여행하다'),J('sci','make fun games','재미있는 게임을 만들다'),J('sci','build beautiful houses','아름다운 집을 짓다'),
+ J('med','help sick people','아픈 사람들을 돕다'),J('med','take care of sick animals','아픈 동물들을 돌보다'),J('med','save the ocean','바다를 지키다'),J('med','protect wild animals','야생 동물을 보호하다'),
+ J('life','keep people safe','사람들을 안전하게 지키다'),J('life','cook delicious food for everyone','모두에게 맛있는 음식을 요리하다'),
+ J('life','travel around the world','세계 곳곳을 여행하다'),J('life','make the world a better place','세상을 더 좋은 곳으로 만들다')
+];
+
+const STEPS = [
+ {key:'job',  ko:'장래희망 직업 정하기', en:'What do you want to be?', pre:'I want to be ', post:'.', hint:'1단계: 되고 싶은 직업을 골라요', data:JOBS, opt:false, ask:'너는 무엇이 되고 싶니?', tabs:true},
+ {key:'subj', ko:'좋아하는 과목 고르기', en:'What is your favorite subject?', pre:'My favorite subject is ', post:'.', hint:'2단계: 좋아하는 과목 (건너뛰기 가능)', data:SUBJECTS, opt:true, ask:'어울리는 과목이 없으면 건너뛰어도 돼요.'},
+ {key:'like', ko:'좋아하는 활동 고르기', en:'What do you like?', pre:'I like ', post:'.', hint:'3단계: 좋아하는 활동을 골라요', data:LIKES, opt:false, ask:'나는 무엇을 하는 것을 좋아할까?'},
+ {key:'who',  ko:'존경하는 인물·가족 고르기', en:'Who is your favorite person?', pre:'My favorite person is ', post:'.', hint:'4단계: 존경하는 사람 (건너뛰기 가능)', data:PEOPLE, opt:true, ask:'가족이나 존경하는 인물을 골라요. 없으면 건너뛰어도 돼요.'},
+ {key:'want', ko:'미래에 하고 싶은 일', en:'What do you want to do?', pre:'I want to ', post:'.', hint:'5단계: 미래에 하고 싶은 일을 골라요', data:WANTS, opt:false, ask:'꿈을 이루면 무엇을 하고 싶니?'}
+];
+
+const KEY='mfd-dreambook-v1';
+let S = {sel:{}, skip:{}, open:0, filter:{}, name:''};
+try{ const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw)); }catch(e){}
+const save=()=>{ try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){} };
+
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const jobG=()=>S.sel.job ? S.sel.job.g : null;
+const matches=(it,g)=>g && (it.g===g || it.g2===g);
+function sentence(i){
+  const st=STEPS[i], v=S.sel[st.key]; if(!v) return null;
+  let w=v.en.trim(); const end=/[.!?]$/.test(w)?'':st.post;
+  return st.pre+w+end;
+}
+
+/* 표지 직업 */
+const HERO=[['art','SP','축구 선수','soccer player'],['med','DR','의사','doctor'],['life','CH','요리사','chef'],['sci','TE','선생님','teacher'],['life','FF','소방관','firefighter'],
+ ['art','SI','가수','singer'],['sci','SC','과학자','scientist'],['med','VT','수의사','vet'],['art','AR','화가','artist'],['sci','AS','우주비행사','astronaut']];
+$('#heroJobs').innerHTML=HERO.map(h=>`<div class="mini"><div class="badge g-${h[0]}">${h[1]}</div><b>${h[2]}</b><span>${h[3]}</span></div>`).join('');
+
+/* 단계 그리기 */
+function renderSteps(){
+  const g=jobG();
+  $('#steps').innerHTML=STEPS.map((st,i)=>{
+    const v=S.sel[st.key], skipped=S.skip[st.key];
+    const done=!!v||skipped; const open=S.open===i;
+    let f=S.filter[st.key]||(st.tabs?'all':(g?'rec':'all'));
+    let items=st.data.map((it,idx)=>({it,idx}));
+    if(st.tabs){ if(f!=='all') items=items.filter(o=>o.it.g===f); }
+    else if(f==='rec' && g){ items=items.filter(o=>matches(o.it,g)||o.it.g==='all'); }
+    const tabs = st.tabs
+      ? [['all','전체'],...Object.entries(G)].map(([k,l])=>`<button type="button" class="filter" data-filter="${k}" data-step="${i}" aria-pressed="${f===k}">${l}</button>`).join('')
+      : (g?[['rec','내 꿈과 어울리는'],['all','전체']].map(([k,l])=>`<button type="button" class="filter" data-filter="${k}" data-step="${i}" aria-pressed="${f===k}">${l}</button>`).join(''):'');
+    const chips=items.map(({it,idx})=>{
+      const on=v && v.en===it.en;
+      const rec=!st.tabs && matches(it,g);
+      let en=esc(it.en);
+      if(st.key==='job'){ en=en.replace(/^(an?) /,'<span class="art">$1</span> '); }
+      return `<button type="button" class="chip" data-step="${i}" data-idx="${idx}" aria-pressed="${!!on}">${rec?'<span class="rec">추천</span>':''}<span class="en">${en}</span><span class="ko">${esc(it.ko)}</span></button>`;
+    }).join('');
+    const blank = v ? `<span class="fill">${esc(v.en)}</span>` : '<span class="blank">______</span>';
+    const chosen = v ? esc(v.en) : (skipped?'건너뜀':'');
+    return `<div class="step ${open?'open':''} ${done?'done':''}">
+      <button type="button" class="step-head" data-head="${i}" aria-expanded="${open}">
+        <span class="num">${done?'✓':i+1}</span>
+        <span class="step-title">${st.ko}<small>${st.en}</small></span>
+        <span>${chosen?`<span class="chosen">${chosen}</span>`:`<span class="tag ${st.opt?'opt':''}">${st.opt?'선택':'필수'}</span>`}</span>
+      </button>
+      <div class="step-body">
+        <p class="frame">${esc(st.pre)}${blank}${st.post}</p>
+        <p class="ask">${st.ask}</p>
+        ${tabs?`<div class="filters">${tabs}</div>`:''}
+        <div class="chips">${chips||'<p class="ask">이 묶음에는 표현이 없어요. 전체를 눌러 보세요.</p>'}</div>
+        <div class="own">
+          <input type="text" id="own-${st.key}" placeholder="${st.key==='job'?'예: a K-pop producer':'직접 영어로 써 보기'}" maxlength="60" aria-label="직접 쓰기">
+          <button type="button" class="btn btn-sub" data-own="${i}">넣기</button>
+        </div>
+        <div class="step-foot">
+          ${st.opt?`<button type="button" class="linkbtn" data-skip="${i}">${skipped?'건너뛰기 취소':'이 단계 건너뛰기'}</button>`:'<span></span>'}
+          ${i<4?`<button type="button" class="btn btn-sea" data-next="${i}">다음 단계</button>`:`<button type="button" class="btn btn-sea" data-finish="1">글 확인하기</button>`}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+const SPK='<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+function renderDraft(){
+  const showKo=$('#showKo').checked;
+  let n=0;
+  $('#lines').innerHTML=STEPS.map((st,i)=>{
+    const s=sentence(i), sk=S.skip[st.key]; if(s) n++;
+    const v=S.sel[st.key];
+    const body = s ? esc(st.pre)+`<span class="fill">${esc(v.en.replace(/[.!?]$/,''))}</span>${esc(st.post)}` : esc(st.pre)+'<span class="hole">______</span>'+st.post;
+    const hint = s ? (showKo?`<span class="hint">${esc(v.ko)}</span>`:'') : `<span class="hint">${sk?'건너뛴 문장이에요 (드림북에 넣지 않아요)':st.hint}</span>`;
+    return `<li class="line ${sk&&!s?'skip':''}" id="ln-${i}"><span class="n">${i+1}</span><span class="s">${body}${hint}</span><button type="button" class="say" data-say="${i}" aria-label="${i+1}번 문장 듣기" ${s?'':'disabled'}>${SPK}</button></li>`;
+  }).join('');
+  const handled=STEPS.filter(st=>S.sel[st.key]||S.skip[st.key]).length;
+  $('#draftCount').textContent=n+'문장';
+  $('#progTxt').textContent=handled+' / 5';
+  $('#barFill').style.width=(handled/5*100)+'%';
+  const ready=['job','like','want'].every(k=>S.sel[k]);
+  $('#openBook').disabled=!ready;
+  $('#bookNote').textContent=ready?'드림북에서 이름을 쓰고 그림 칸에 미래의 나를 그려 보세요.':'1·3·5단계를 채우면 드림북을 만들 수 있어요.';
+  $('#readAll').disabled=n===0;
+}
+function render(){ renderSteps(); renderDraft(); save(); }
+
+/* 이벤트 */
+$('#steps').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  const d=b.dataset;
+  if(d.head!==undefined){ const i=+d.head; S.open=S.open===i?-1:i; render(); return; }
+  if(d.filter){ S.filter[STEPS[+d.step].key]=d.filter; render(); return; }
+  if(d.idx!==undefined){
+    const st=STEPS[+d.step], it=st.data[+d.idx];
+    const cur=S.sel[st.key];
+    if(cur && cur.en===it.en) delete S.sel[st.key]; else { S.sel[st.key]={en:it.en,ko:it.ko,g:it.g}; delete S.skip[st.key]; speak(sentence(+d.step)); }
+    render(); return;
+  }
+  if(d.own!==undefined){
+    const st=STEPS[+d.own], inp=document.getElementById('own-'+st.key), t=inp.value.trim();
+    if(!t){ inp.focus(); return; }
+    S.sel[st.key]={en:t,ko:'(직접 쓴 표현)',g:st.key==='job'?null:'own'}; delete S.skip[st.key]; speak(sentence(+d.own)); render(); return;
+  }
+  if(d.skip!==undefined){ const k=STEPS[+d.skip].key; if(S.skip[k]) delete S.skip[k]; else { S.skip[k]=true; delete S.sel[k]; S.open=+d.skip+1; } render(); return; }
+  if(d.next!==undefined){ S.open=+d.next+1; render(); document.querySelectorAll('.step')[S.open].scrollIntoView({behavior:'smooth',block:'nearest'}); return; }
+  if(d.finish){ S.open=-1; render(); $('.draft').scrollIntoView({behavior:'smooth',block:'start'}); }
+});
+$('#steps').addEventListener('keydown',e=>{ if(e.key==='Enter' && e.target.matches('.own input')){ e.preventDefault(); e.target.nextElementSibling.click(); }});
+$('#showKo').addEventListener('change',renderDraft);
+$('#goStart').addEventListener('click',()=>{ S.open=0; render(); $('#work').scrollIntoView({behavior:'smooth'}); });
+$('#goSample').addEventListener('click',()=>{
+  S.sel={job:{en:'a vet',ko:'수의사',g:'med'},subj:{en:'science',ko:'과학',g:'sci'},like:{en:'taking care of animals',ko:'동물 돌보기',g:'med'},who:{en:'Jane Goodall',ko:'제인 구달',g:'med'},want:{en:'take care of sick animals',ko:'아픈 동물들을 돌보다',g:'med'}};
+  S.skip={}; S.open=-1; render(); $('.draft').scrollIntoView({behavior:'smooth'});
+});
+$('#resetAll').addEventListener('click',function(){
+  if(this.dataset.armed){ S={sel:{},skip:{},open:0,filter:{},name:S.name}; render(); this.textContent='처음부터 다시 쓰기'; delete this.dataset.armed; return; }
+  this.dataset.armed='1'; this.textContent='정말 지울까요? 한 번 더 누르면 지워져요';
+  setTimeout(()=>{ if(this.dataset.armed){ delete this.dataset.armed; this.textContent='처음부터 다시 쓰기'; } },4000);
+});
+
+/* 음성 */
+let voice=null;
+function pickVoice(){
+  if(!('speechSynthesis' in window)) return;
+  const vs=speechSynthesis.getVoices().filter(v=>/^en[-_]US/i.test(v.lang));
+  voice=vs.find(v=>/Google|Samantha|Aria|Jenny|Natural/i.test(v.name))||vs[0]||speechSynthesis.getVoices().find(v=>/^en/i.test(v.lang))||null;
+}
+if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+function speak(text,onEnd){
+  if(!text||!('speechSynthesis' in window)) { onEnd&&onEnd(); return; }
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US'; if(voice) u.voice=voice; u.rate=+$('#rate').value;
+  if(onEnd) u.onend=onEnd;
+  speechSynthesis.speak(u);
+}
+function readSeq(idxs){
+  let k=0;
+  const next=()=>{
+    document.querySelectorAll('.line').forEach(l=>l.classList.remove('speaking'));
+    if(k>=idxs.length) return;
+    const i=idxs[k++]; const li=document.getElementById('ln-'+i); if(li) li.classList.add('speaking');
+    speak(sentence(i),next);
+  };
+  next();
+}
+const filled=()=>STEPS.map((_,i)=>i).filter(i=>sentence(i));
+$('#lines').addEventListener('click',e=>{ const b=e.target.closest('[data-say]'); if(b) readSeq([+b.dataset.say]); });
+$('#readAll').addEventListener('click',()=>readSeq(filled()));
+
+/* 드림북 */
+const inFrame=(()=>{ try{return window.self!==window.top;}catch(e){return true;} })();
+function stampSVG(){
+  const j=S.sel.job, label=(j?j.en.replace(/^(an?|the) /i,''):'dreamer').toUpperCase();
+  const fs=label.length>14?13:label.length>10?16:20;
+  return `<circle cx="100" cy="100" r="92" fill="none" stroke="#EE6A52" stroke-width="4"/>
+  <circle cx="100" cy="100" r="80" fill="none" stroke="#EE6A52" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <defs><path id="arcT" d="M28,100 a72,72 0 1,1 144,0"/><path id="arcB" d="M30,104 a70,70 0 0,0 140,0"/></defs>
+  <text fill="#EE6A52" font-size="13" letter-spacing="3"><textPath href="#arcT" startOffset="50%" text-anchor="middle">MY FUTURE DREAM</textPath></text>
+  <text fill="#EE6A52" font-size="11" letter-spacing="3"><textPath href="#arcB" startOffset="50%" text-anchor="middle">I CAN DO IT</textPath></text>
+  <path d="M100 52 l9 18 20 3 -14.5 14 3.4 20 -17.9 -9.4 -17.9 9.4 3.4 -20 -14.5 -14 20 -3z" fill="#FFC53D"/>
+  <text x="100" y="138" text-anchor="middle" fill="#16324A" font-size="${fs}">${esc(label)}</text>`;
+}
+function fillBook(){
+  const name=S.name||'';
+  $('#nameIn').value=name;
+  $('#bkName').textContent=name||' ';
+  const d=new Date(); $('#bkDate').textContent=d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  const idx=filled();
+  const intro = name ? `Hi! My name is ${esc(name)}. ` : '';
+  $('#bkText').innerHTML='<p>'+intro+idx.map(i=>esc(sentence(i))).join(' ')+'</p>';
+  $('#bkKo').textContent=idx.map(i=>{ const v=S.sel[STEPS[i].key]; return STEPS[i].ko.replace(/ (정하기|고르기)$/,'')+': '+v.ko; }).join(' · ');
+  $('#bkKo').hidden=!$('#showKo').checked;
+  $('#stamp').innerHTML=stampSVG();
+  $('#printNote').hidden=!inFrame;
+}
+$('#openBook').addEventListener('click',()=>{ fillBook(); $('#bookLayer').hidden=false; document.body.style.overflow='hidden'; $('#nameIn').focus(); });
+const closeBook=()=>{ $('#bookLayer').hidden=true; document.body.style.overflow=''; if('speechSynthesis' in window) speechSynthesis.cancel(); };
+$('#closeBook').addEventListener('click',closeBook);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !$('#bookLayer').hidden) closeBook(); });
+$('#nameIn').addEventListener('input',e=>{ S.name=e.target.value.trim(); save(); fillBook(); });
+$('#readBook').addEventListener('click',()=>{ const t=$('#bkText').textContent; speak(t); });
+$('#copyBook').addEventListener('click',function(){
+  const t=$('#bkText').textContent, b=this;
+  const ok=()=>{ b.textContent='복사했어요'; setTimeout(()=>b.textContent='글 복사',1600); };
+  const fallback=()=>{ const r=document.createRange(); r.selectNodeContents($('#bkText')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent='선택됐어요 · Ctrl+C'; setTimeout(()=>b.textContent='글 복사',2400); };
+  try{ navigator.clipboard.writeText(t).then(ok,fallback); }catch(e){ fallback(); }
+});
+$('#printBook').addEventListener('click',()=>{ if(inFrame){ $('#printNote').hidden=false; return; } window.print(); });
+
+render();
+})();
+</script>
+
+</body>
+</html>
